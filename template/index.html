@@ -2,10 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{{ name }}</title>
+    <link rel="stylesheet" href="/src/assets/css/bootstrap.min.css">
+    <title>A lowlevel Vue application</title>
   </head>
   <body>
-    <div id="app"></div>
+    <h1 style="margin-bottom: 40px;">Kasope Notes App</h1>
+    <div id="app">
+    
+    </div>
+    <!-- Use render function instead. Possibly import the render function for clarity -->
+    <script type="text/x-template" id="note-summary-template">
+              <div class="border border-secondary p-2 d-flex flex-column">
+                <input type="text" class="border" :value="note.title"/>
+                <p>{{note.summary}}</p>
+              </div>
+            </script>
     <script src="/dist/build.js"></script>
   </body>
 </html>
