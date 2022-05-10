@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/src/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/src/assets/css/styles.css">
     <title>A lowlevel Vue application</title>
   </head>
   <body>
@@ -12,7 +13,10 @@
     </div>
     <!-- Use render function instead. Possibly import the render function for clarity -->
     <script type="text/x-template" id="note-summary-template">
-              <div class="border border-secondary p-2 d-flex flex-column">
+              <div class="border border-secondary note-summary p-2 m-2 d-flex flex-column">
+                <div class="d-flex justify-content-end">
+                  <input type="checkbox" name="delete-note-check" id="delete-note-check" v-on:click="toggleSelect">
+                </div>
                 <input type="text" class="border" :value="note.title"/>
                 <p>{{note.summary}}</p>
               </div>

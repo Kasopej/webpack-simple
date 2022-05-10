@@ -1,9 +1,16 @@
 export default {
-  name: "NoteSummart",
+  name: "NoteSummary",
   props: {
     note: {
       type: Object,
       default: () => {}
+    }
+  },
+  methods: {
+    toggleSelect(e) {
+      e.target.checked
+        ? this.$emit("selectNote", this.note)
+        : this.$emit("unSelectNote", this.note);
     }
   },
   template: "#note-summary-template"
