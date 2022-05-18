@@ -6,6 +6,11 @@ export default {
       default: () => {}
     }
   },
+  data() {
+    return {
+      mode: "Edit"
+    };
+  },
   methods: {
     toggleSelect(e) {
       e.target.checked

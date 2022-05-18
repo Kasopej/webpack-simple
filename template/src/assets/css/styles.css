@@ -1,3 +1,6 @@
 #delete-note-check:hover {
     border: solid 1px green
 }
+.bg-see-through{
+    background-color:rgba(0,0,0,0.3)
+}
