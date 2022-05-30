@@ -1,3 +1,6 @@
+import CreateEditNote from "./CreateEditNote";
+
+const summaryLength = 20;
 export default {
   name: "NoteSummary",
   props: {
@@ -6,9 +9,12 @@ export default {
       default: () => {}
     }
   },
+  components: { CreateEditNote },
   data() {
     return {
-      mode: "Edit"
+      mode: "edit",
+      showEditButton: false,
+      showNoteModal: false
     };
   },
   methods: {
@@ -16,6 +22,23 @@ export default {
       e.target.checked
         ? this.$emit("selectNote", this.note)
         : this.$emit("unSelectNote", this.note);
+    },
+    launchEditNote() {
+      this.showNoteModal = true;
+    },
+    closeModal() {
+      this.showNoteModal = false;
+      this.showEditButton = false;
+    }
+  },
+  filters: {
+    summarize(value) {
+      if (value) {
+        const summarizedInArray = value.split("");
+        summarizedInArray.length = summaryLength;
+        let summaryText = summarizedInArray.join("");
+        return summaryText === value ? value : summaryText + "...";
+      }
     }
   },
   template: "#note-summary-template"

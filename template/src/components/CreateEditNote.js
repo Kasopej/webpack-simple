@@ -1,22 +1,34 @@
+import { mapActions } from "vuex";
+
 export default {
   name: "CreateEditNote",
   props: {
     note: {
-      type: Object
+      type: Object,
+      default: () => {
+        return { title: "", text: "" };
+      }
     },
     mode: {
       type: String,
-      default: ""
+      default: "",
+      required: true
     }
   },
   data() {
     return {};
   },
   methods: {
+    ...mapActions(["addNote", "editNote"]),
     preventPropagation(event) {
       event.stopPropagation();
     },
     closeModal(event) {
+      if ((this.note.title || this.note.text) && this.mode === "create") {
+        this.addNote({ title: this.note.title, text: this.note.text });
+      } else if (this.mode === "edit") {
+        this.editNote({ title: this.note.title, text: this.note.text });
+      }
       event.stopPropagation();
       this.$emit("closeModal");
     },
@@ -50,18 +62,28 @@ export default {
               <form onSubmit={this.onSubmit}>
                 <div class="form-group">
                   <label for="title">title</label>
-                  {this.$scopedSlots.title({ title: this.note.title }) ? (
-                    this.$scopedSlots.title({ title: this.note.title })
+                  {this.$scopedSlots.title ? (
+                    this.$scopedSlots.title(this.note)
                   ) : (
                     <input
                       value={this.note.title}
                       name="title"
                       id="title"
+                      onInput={event => {
+                        this.note.title = event.currentTarget.value;
+                      }}
                     ></input>
                   )}
                 </div>
+                <div class="form-group"></div>
+                <label for="note-text">text</label>
+                <textarea
+                  value={this.note.text}
+                  onInput={event => {
+                    this.note.text = event.currentTarget.value;
+                  }}
+                ></textarea>
               </form>
-              <h1>{this.$slots.heading}</h1>
             </div>
           </div>
         </div>

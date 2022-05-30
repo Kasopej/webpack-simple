@@ -3,20 +3,14 @@ import Vue from 'vue'
 import NoteSummary from './components/NoteSummary'
 import CreateEditNote from "./components/CreateEditNote";
 import store from "./store";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 
 export const eventBus = new Vue({});
 new Vue({
   store,
   data: {
     showNoteModal: false,
-    mode: "Create",
-    notes: [
-      {
-        title: "A new note",
-        summary: "Summary of the new note"
-      },
-    ],
+    mode: "create",
     labels: [],
     selectedNotes: []
   },
@@ -25,7 +19,7 @@ new Vue({
     "create-edit-note": CreateEditNote
   },
   methods: {
-    ...mapActions(["addNote"]),
+    ...mapActions(["addNote", "deleteNotes"]),
     selectNote(note) {
       !this.selectedNotes.includes(note)
         ? this.selectedNotes.push(note)
@@ -38,15 +32,27 @@ new Vue({
       }
     },
     launchAddNote() {
-      this.addNote({ title: "", text: "" });
       this.showNoteModal = true;
     },
-    closeModal(){
+    closeModal() {
       this.showNoteModal = false;
+    },
+    actOnMultipleNotes(event) {
+      if (event.target.classList.contains("delete")) {
+        this.deleteNotes(this.selectedNotes).then(
+          () => (this.selectedNotes = [])
+        );
+      }
     }
   },
   computed: {
-    ...mapGetters(["latestNote"])
+    ...mapGetters(["latestNote"]),
+    ...mapState(["notes"])
+  },
+  watch: {
+    notes() {
+      console.log(this.notes);
+    }
   },
   //template: `<h1>{{msg}}</h1>`,
   el: "#app",
@@ -60,30 +66,61 @@ new Vue({
     return (
       <main class="container-fluid px-4">
         {this.showNoteModal ? (
-          <create-edit-note note={this.latestNote} onCloseModal={this.closeModal} mode={this.mode}
-          {...{scopedSlots : {
-            title: ({title}) => <input class="form-group" type="input" value={title} name="title" id="title"></input>
-          }}}
-          >
-            <em
-            slot="heading"
-            >A heading</em>
-          </create-edit-note>
+          <create-edit-note
+            onCloseModal={this.closeModal}
+            mode={this.mode}
+            {...{
+              scopedSlots: {
+                title: titleSlot => (
+                  <input
+                    class="form-group"
+                    type="input"
+                    value={titleSlot.title}
+                    name="title"
+                    id="title"
+                    onInput={event => {
+                      titleSlot.title = event.currentTarget.value;
+                    }}
+                  ></input>
+                )
+              }
+            }}
+          ></create-edit-note>
         ) : (
           ""
         )}
         <input type="text" class="form-control" placeholder="search notes" />
         <section class="notes-section">
           <h3 class="text-center">Your notes</h3>
-          <button
-            onClick={this.launchAddNote}
-            class="ml-2 btn btn-success rounded"
-          >
-            +
-          </button>
-          <div class="d-flex">
+          <div style="float:left" class="d-flex justify-content-start">
+            <button
+              onClick={this.launchAddNote}
+              class="ml-2 btn btn-success rounded"
+            >
+              +
+            </button>
+          </div>
+
+          <div style="float:right" class="d-flex justify-content-end">
+            <div>
+              <i class="fa-thin fa-trash"></i>
+              <button
+                class="delete btn btn-danger btn-md"
+                onClick={this.actOnMultipleNotes}
+                disabled={!this.selectedNotes.length}
+              >
+                delete selected
+              </button>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap" style="clear:both">
             {this.notes.map(note => (
-              <note-summary note={note} {...listeners}></note-summary>
+              <note-summary
+                note={note}
+                {...listeners}
+                key={note.title}
+              ></note-summary>
             ))}
           </div>
           <div class="d-flex"></div>

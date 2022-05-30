@@ -8,7 +8,7 @@ const state = {
 };
 const getters = {
   latestNote(state) {
-    return state.notes[state.notes.length - 1];
+    return state.notes[0];
   }
 };
 const actions = {
@@ -16,11 +16,33 @@ const actions = {
     const noteId = state.notes.length + 1;
     note.id = noteId;
     commit("commitAddNote", note);
+  },
+  editNote({ commit }, note) {
+    commit("commitEditNote", note);
+  },
+  deleteNotes({ state, commit }, selectedNotes) {
+    selectedNotes.forEach(selectedNote => {
+      commit(
+        "deleteNote",
+        state.notes.find(note => note.id === selectedNote.id)
+      );
+      commit("reOrderNotes");
+    });
   }
 };
 const mutations = {
   commitAddNote(state, note) {
     state.notes.splice(state.notes.length, 0, note);
+  },
+  commitEditNote(state, note) {
+    state.notes.splice(note.id, 1, note);
+  },
+  deleteNote(state, note) {
+    console.log("deleting" + note);
+    note ? state.notes.splice(--note.id, 1) : "do nothing";
+  },
+  reOrderNotes(state) {
+    state.notes.forEach((note, index) => note.id === index + 1);
   }
 };
 
