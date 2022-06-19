@@ -1,4 +1,4 @@
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "CreateEditNote",
@@ -25,7 +25,8 @@ export default {
   computed: {
     localNote() {
       return JSON.parse(JSON.stringify(this.note));
-    }
+    },
+    ...mapGetters(["nextId"])
   },
   methods: {
     ...mapActions(["addNote", "editNote"]),
@@ -42,10 +43,7 @@ export default {
           text: this.localNote.text
         });
       } else if (this.mode === "edit") {
-        this.editNote({
-          title: this.localNote.title,
-          text: this.localNote.text
-        });
+        this.editNote(this.localNote);
       }
       event.stopPropagation();
       this.$emit("closeModal");

@@ -2,10 +2,12 @@ import Vue from "vue";
 import vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
 
+
 Vue.use(vuex);
 const state = {
   notes: [],
-  notesQuery: ""
+  notesQuery: "",
+  nextId: 1
 };
 const getters = {
   latestNote(state) {
@@ -17,12 +19,17 @@ const getters = {
         note.title.includes(state.notesQuery) ||
         note.text.includes(state.notesQuery)
     );
+  },
+  nextId(state) {
+    let nextId = null;
+    state.notes.forEach(
+      note => (nextId = note.id >= nextId ? note.id : nextId)
+    );
+    return ++nextId;
   }
 };
 const actions = {
-  addNote({ commit, state }, note) {
-    const noteId = state.notes.length + 1;
-    note.id = noteId;
+  addNote({ commit }, note) {
     commit("commitAddNote", note);
   },
   editNote({ commit }, note) {
@@ -34,28 +41,31 @@ const actions = {
         "deleteNote",
         state.notes.find(note => note.id === selectedNote.id)
       );
-      commit("reOrderNotes");
     });
   }
 };
 const mutations = {
   commitAddNote(state, note) {
+    note.id = state.nextId++;
     state.notes.splice(state.notes.length, 0, note);
   },
   commitEditNote(state, note) {
-    state.notes.splice(note.id, 1, note);
+    state.notes.splice(getNotePosition(state, note), 1, note);
   },
   deleteNote(state, note) {
-    console.log("deleting" + note);
-    note ? state.notes.splice(--note.id, 1) : "do nothing";
+    state.notes.splice(getNotePosition(state, note), 1);
   },
-  reOrderNotes(state) {
+  reorderNotes(state) {
     state.notes.forEach((note, index) => note.id === index + 1);
   },
   updateStateQuery(state, query) {
     state.notesQuery = query;
   }
 };
+
+function getNotePosition(state, note) {
+  return state.notes.findIndex(stateNote => note.id === stateNote.id);
+}
 
 export default new vuex.Store({
   state,
