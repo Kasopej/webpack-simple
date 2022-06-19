@@ -11,8 +11,9 @@ new Vue({
   data: {
     showNoteModal: false,
     mode: "create",
-    labels: [],
-    selectedNotes: []
+    selectedNotes: [],
+    showCreateLabel: false,
+    newLabel: ""
   },
   components: {
     "note-summary": NoteSummary,
@@ -20,7 +21,7 @@ new Vue({
   },
   methods: {
     ...mapActions(["addNote", "deleteNotes", "updateQuery"]),
-    ...mapMutations(["updateStateQuery"]),
+    ...mapMutations(["updateStateQuery", "addLabel"]),
     selectNote(note) {
       !this.selectedNotes.includes(note)
         ? this.selectedNotes.push(note)
@@ -51,7 +52,7 @@ new Vue({
   },
   computed: {
     ...mapGetters(["latestNote", "notes"]),
-    ...mapState(["notesQuery"])
+    ...mapState(["notesQuery", "labels"])
   },
   el: "#app",
   render() {
@@ -129,9 +130,37 @@ new Vue({
           </div>
           <div class="d-flex"></div>
           <span>Labels: </span>
-          <ul class="d-flex">
+          <button
+            class="btn p-1"
+            onClick={() => (this.showCreateLabel = !this.showCreateLabel)}
+          >
+            +
+          </button>
+          {this.showCreateLabel ? (
+            <div class="d-inline">
+              <input
+                type="text"
+                value={this.newLabel}
+                onInput={event => (this.newLabel = event.currentTarget.value)}
+              ></input>
+              <button
+                class="btn"
+                onClick={() => {
+                  console.log("adding label");
+                  this.addLabel(this.newLabel);
+                  console.log("after addLabel mutation");
+                }}
+                disabled={!this.newLabel}
+              >
+                add label
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+          <ul class="d-flex mt-2">
             {this.labels.map(label => (
-              <li>{label}</li>
+              <li class="badge bg-success px-2">{label}</li>
             ))}
           </ul>
         </section>

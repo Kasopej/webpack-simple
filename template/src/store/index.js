@@ -6,6 +6,7 @@ import createPersistedState from "vuex-persistedstate";
 Vue.use(vuex);
 const state = {
   notes: [],
+  labels: [],
   notesQuery: "",
   nextId: 1
 };
@@ -55,8 +56,10 @@ const mutations = {
   deleteNote(state, note) {
     state.notes.splice(getNotePosition(state, note), 1);
   },
-  reorderNotes(state) {
-    state.notes.forEach((note, index) => note.id === index + 1);
+  addLabel(state, newLabel) {
+    if (newLabel && !state.labels.includes(newLabel)) {
+      state.labels.splice(state.labels.length, 0, newLabel);
+    }
   },
   updateStateQuery(state, query) {
     state.notesQuery = query;
