@@ -2,6 +2,10 @@ import { mapActions } from "vuex";
 
 export default {
   name: "CreateEditNote",
+  model: {
+    prop: "note",
+    event: "change"
+  },
   props: {
     note: {
       type: Object,
@@ -18,16 +22,30 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    localNote() {
+      return JSON.parse(JSON.stringify(this.note));
+    }
+  },
   methods: {
     ...mapActions(["addNote", "editNote"]),
     preventPropagation(event) {
       event.stopPropagation();
     },
     closeModal(event) {
-      if ((this.note.title || this.note.text) && this.mode === "create") {
-        this.addNote({ title: this.note.title, text: this.note.text });
+      if (
+        (this.localNote.title || this.localNote.text) &&
+        this.mode === "create"
+      ) {
+        this.addNote({
+          title: this.localNote.title,
+          text: this.localNote.text
+        });
       } else if (this.mode === "edit") {
-        this.editNote({ title: this.note.title, text: this.note.text });
+        this.editNote({
+          title: this.localNote.title,
+          text: this.localNote.text
+        });
       }
       event.stopPropagation();
       this.$emit("closeModal");
@@ -63,14 +81,14 @@ export default {
                 <div class="form-group">
                   <label for="title">title</label>
                   {this.$scopedSlots.title ? (
-                    this.$scopedSlots.title(this.note)
+                    this.$scopedSlots.title(this.localNote)
                   ) : (
                     <input
-                      value={this.note.title}
+                      value={this.localNote.title}
                       name="title"
                       id="title"
                       onInput={event => {
-                        this.note.title = event.currentTarget.value;
+                        this.localNote.title = event.currentTarget.value;
                       }}
                     ></input>
                   )}
@@ -78,9 +96,9 @@ export default {
                 <div class="form-group"></div>
                 <label for="note-text">text</label>
                 <textarea
-                  value={this.note.text}
+                  value={this.localNote.text}
                   onInput={event => {
-                    this.note.text = event.currentTarget.value;
+                    this.localNote.text = event.currentTarget.value;
                   }}
                 ></textarea>
               </form>

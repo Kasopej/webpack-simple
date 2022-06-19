@@ -114,7 +114,7 @@ new Vue({
             </div>
           </div>
 
-          <div class="d-flex flex-wrap" style="clear:both">
+          <div class="d-flex flex-wrap notes-wrapper" style="clear:both">
             {this.notes.map(note => (
               <note-summary
                 note={note}
