@@ -3,7 +3,7 @@ import Vue from 'vue'
 import NoteSummary from './components/NoteSummary'
 import CreateEditNote from "./components/CreateEditNote";
 import store from "./store";
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState, mapMutations } from "vuex";
 
 export const eventBus = new Vue({});
 new Vue({
@@ -19,7 +19,8 @@ new Vue({
     "create-edit-note": CreateEditNote
   },
   methods: {
-    ...mapActions(["addNote", "deleteNotes"]),
+    ...mapActions(["addNote", "deleteNotes", "updateQuery"]),
+    ...mapMutations(["updateStateQuery"]),
     selectNote(note) {
       !this.selectedNotes.includes(note)
         ? this.selectedNotes.push(note)
@@ -43,11 +44,14 @@ new Vue({
           () => (this.selectedNotes = [])
         );
       }
+    },
+    updateQuery(query) {
+      this.updateStateQuery(query);
     }
   },
   computed: {
-    ...mapGetters(["latestNote"]),
-    ...mapState(["notes"])
+    ...mapGetters(["latestNote", "notes"]),
+    ...mapState(["notesQuery"])
   },
   watch: {
     notes() {
@@ -89,7 +93,13 @@ new Vue({
         ) : (
           ""
         )}
-        <input type="text" class="form-control" placeholder="search notes" />
+        <input
+          type="text"
+          class="form-control"
+          placeholder="search notes"
+          value={this.notesQuery}
+          onInput={event => this.updateQuery(event.currentTarget.value)}
+        />
         <section class="notes-section">
           <h3 class="text-center">Your notes</h3>
           <div style="float:left" class="d-flex justify-content-start">

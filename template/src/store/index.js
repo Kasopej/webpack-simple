@@ -4,11 +4,19 @@ import createPersistedState from "vuex-persistedstate";
 
 Vue.use(vuex);
 const state = {
-  notes: []
+  notes: [],
+  notesQuery: ""
 };
 const getters = {
   latestNote(state) {
     return state.notes[0];
+  },
+  notes(state) {
+    return state.notes.filter(
+      note =>
+        note.title.includes(state.notesQuery) ||
+        note.text.includes(state.notesQuery)
+    );
   }
 };
 const actions = {
@@ -43,6 +51,9 @@ const mutations = {
   },
   reOrderNotes(state) {
     state.notes.forEach((note, index) => note.id === index + 1);
+  },
+  updateStateQuery(state, query) {
+    state.notesQuery = query;
   }
 };
 
