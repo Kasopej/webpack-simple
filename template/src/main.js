@@ -12,6 +12,7 @@ new Vue({
     showNoteModal: false,
     mode: "create",
     selectedNotes: [],
+    selectedLabels: [],
     showCreateLabel: false,
     newLabel: ""
   },
@@ -21,7 +22,7 @@ new Vue({
   },
   methods: {
     ...mapActions(["addNote", "deleteNotes", "updateQuery"]),
-    ...mapMutations(["updateStateQuery", "addLabel"]),
+    ...mapMutations(["updateStateQuery", "addLabel", "commitSelectedLabels"]),
     selectNote(note) {
       !this.selectedNotes.includes(note)
         ? this.selectedNotes.push(note)
@@ -48,11 +49,31 @@ new Vue({
     },
     updateQuery(query) {
       this.updateStateQuery(query);
+    },
+    toggleLabel(event) {
+      let label = event.currentTarget.textContent;
+      console.log("label toggle clicked ", label);
+      if (!this.selectedLabels.includes(label)) {
+        console.log("pushing label");
+        this.selectedLabels.push(label);
+        event.currentTarget.classList.add("selected-label");
+        return;
+      }
+      let labelIndex = this.selectedLabels.indexOf(label);
+      if (labelIndex !== -1) {
+        this.selectedLabels.splice(labelIndex, 1);
+        event.currentTarget.classList.remove("selected-label");
+      }
     }
   },
   computed: {
     ...mapGetters(["latestNote", "notes"]),
     ...mapState(["notesQuery", "labels"])
+  },
+  watch: {
+    selectedLabels() {
+      this.commitSelectedLabels(this.selectedLabels);
+    }
   },
   el: "#app",
   render() {
@@ -68,6 +89,7 @@ new Vue({
           <create-edit-note
             onCloseModal={this.closeModal}
             mode={this.mode}
+            labels={this.labels}
             {...{
               scopedSlots: {
                 title: titleSlot => (
@@ -146,9 +168,7 @@ new Vue({
               <button
                 class="btn"
                 onClick={() => {
-                  console.log("adding label");
                   this.addLabel(this.newLabel);
-                  console.log("after addLabel mutation");
                 }}
                 disabled={!this.newLabel}
               >
@@ -160,7 +180,9 @@ new Vue({
           )}
           <ul class="d-flex mt-2">
             {this.labels.map(label => (
-              <li class="badge bg-success px-2">{label}</li>
+              <li class="badge bg-warning px-2" onClick={this.toggleLabel}>
+                {label}
+              </li>
             ))}
           </ul>
         </section>

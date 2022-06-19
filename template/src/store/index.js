@@ -7,26 +7,25 @@ Vue.use(vuex);
 const state = {
   notes: [],
   labels: [],
+  selectedLabels: [],
   notesQuery: "",
   nextId: 1
 };
 const getters = {
-  latestNote(state) {
-    return state.notes[0];
-  },
   notes(state) {
-    return state.notes.filter(
-      note =>
-        note.title.includes(state.notesQuery) ||
-        note.text.includes(state.notesQuery)
-    );
-  },
-  nextId(state) {
-    let nextId = null;
-    state.notes.forEach(
-      note => (nextId = note.id >= nextId ? note.id : nextId)
-    );
-    return ++nextId;
+    return state.notes.filter(note => {
+      if (state.selectedLabels.length) {
+        return (
+          (note.title.toLowerCase().includes(state.notesQuery.toLowerCase()) ||
+            note.text.toLowerCase().includes(state.notesQuery.toLowerCase())) &&
+          state.selectedLabels.includes(note.label)
+        );
+      } else
+        return (
+          note.title.toLowerCase().includes(state.notesQuery.toLowerCase()) ||
+          note.text.toLowerCase().includes(state.notesQuery.toLowerCase())
+        );
+    });
   }
 };
 const actions = {
@@ -63,6 +62,9 @@ const mutations = {
   },
   updateStateQuery(state, query) {
     state.notesQuery = query;
+  },
+  commitSelectedLabels(state, selectedLabels){
+    state.selectedLabels = selectedLabels;
   }
 };
 

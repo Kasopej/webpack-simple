@@ -1,4 +1,4 @@
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
   name: "CreateEditNote",
@@ -26,7 +26,8 @@ export default {
     localNote() {
       return JSON.parse(JSON.stringify(this.note));
     },
-    ...mapGetters(["nextId"])
+    ...mapGetters(["nextId"]),
+    ...mapState(["labels"])
   },
   methods: {
     ...mapActions(["addNote", "editNote"]),
@@ -38,10 +39,7 @@ export default {
         (this.localNote.title || this.localNote.text) &&
         this.mode === "create"
       ) {
-        this.addNote({
-          title: this.localNote.title,
-          text: this.localNote.text
-        });
+        this.addNote(this.localNote);
       } else if (this.mode === "edit") {
         this.editNote(this.localNote);
       }
@@ -91,14 +89,28 @@ export default {
                     ></input>
                   )}
                 </div>
-                <div class="form-group"></div>
-                <label for="note-text">text</label>
-                <textarea
-                  value={this.localNote.text}
-                  onInput={event => {
-                    this.localNote.text = event.currentTarget.value;
-                  }}
-                ></textarea>
+                <div class="form-group">
+                  <label for="note-text">text</label>
+                  <textarea
+                    value={this.localNote.text}
+                    onInput={event => {
+                      this.localNote.text = event.currentTarget.value;
+                    }}
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="note-text">labels</label>
+                  <select
+                    value={this.localNote.label}
+                    onChange={event =>
+                      (this.localNote.label = event.currentTarget.value)
+                    }
+                  >
+                    {this.labels.map(label => {
+                      return <option value={label}>{label}</option>;
+                    })}
+                  </select>
+                </div>
               </form>
             </div>
           </div>
