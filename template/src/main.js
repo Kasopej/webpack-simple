@@ -40,9 +40,9 @@ new Vue({
     },
     actOnMultipleNotes(event) {
       if (event.target.classList.contains("delete")) {
-        this.deleteNotes(this.selectedNotes).then(
-          () => (this.selectedNotes = [])
-        );
+        this.deleteNotes(this.selectedNotes).finally(() => {
+          this.selectedNotes = [];
+        });
       }
     },
     updateQuery(query) {
@@ -53,12 +53,6 @@ new Vue({
     ...mapGetters(["latestNote", "notes"]),
     ...mapState(["notesQuery"])
   },
-  watch: {
-    notes() {
-      console.log(this.notes);
-    }
-  },
-  //template: `<h1>{{msg}}</h1>`,
   el: "#app",
   render() {
     const listeners = {
