@@ -18,7 +18,9 @@ const getters = {
         return (
           (note.title.toLowerCase().includes(state.notesQuery.toLowerCase()) ||
             note.text.toLowerCase().includes(state.notesQuery.toLowerCase())) &&
-          state.selectedLabels.includes(note.label)
+          state.selectedLabels.some(selectedLabel =>
+            note.labels.includes(selectedLabel)
+          )
         );
       } else
         return (

@@ -1,7 +1,11 @@
 import { mapActions, mapGetters, mapState } from "vuex";
+import SelectNoteLabels from "./SelectNoteLabels";
 
 export default {
   name: "CreateEditNote",
+  components: {
+    SelectNoteLabels
+  },
   model: {
     prop: "note",
     event: "change"
@@ -10,7 +14,7 @@ export default {
     note: {
       type: Object,
       default: () => {
-        return { title: "", text: "" };
+        return { title: "", text: "", labels: [] };
       }
     },
     mode: {
@@ -100,16 +104,11 @@ export default {
                 </div>
                 <div class="form-group">
                   <label for="note-text">labels</label>
-                  <select
-                    value={this.localNote.label}
-                    onChange={event =>
-                      (this.localNote.label = event.currentTarget.value)
-                    }
-                  >
-                    {this.labels.map(label => {
-                      return <option value={label}>{label}</option>;
-                    })}
-                  </select>
+                  <span class="d-block">{this.localNote.labels.join()}</span>
+                  <SelectNoteLabels
+                    options={this.labels}
+                    onInput={event => (this.localNote.labels = event)}
+                  ></SelectNoteLabels>
                 </div>
               </form>
             </div>

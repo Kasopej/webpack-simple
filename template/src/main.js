@@ -52,9 +52,7 @@ new Vue({
     },
     toggleLabel(event) {
       let label = event.currentTarget.textContent;
-      console.log("label toggle clicked ", label);
       if (!this.selectedLabels.includes(label)) {
-        console.log("pushing label");
         this.selectedLabels.push(label);
         event.currentTarget.classList.add("selected-label");
         return;

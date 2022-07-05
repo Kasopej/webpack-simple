@@ -22,6 +22,7 @@
                 <input type="text" class="border" v-model="note.title"/>
                 <p>{{note.text | summarize}}</p>
                 <button @click="launchEditNote" class="btn btn-warning" v-if="showEditButton">edit</button>
+                <span class="mt-1 px-2 bg-secondary">{{note.labels.join()}}</span>
                 <create-edit-note v-if="showNoteModal" :mode="mode" :note="note" @closeModal="closeModal"></create-edit-note>
               </div>
             </script>
