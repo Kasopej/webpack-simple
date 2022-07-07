@@ -12,23 +12,6 @@
     <div id="app">
     
     </div>
-    <!-- Use render function instead. Possibly import the render function for clarity -->
-    <script type="text/x-template" id="note-summary-template">
-              <div @mouseenter="showEditButton = true" @mouseleave="showEditButton = false" class="border border-secondary note-summary p-2 mt-2 card">
-                <div class="d-flex justify-content-end">
-                  <input type="checkbox" name="delete-note-check" id="delete-note-check" v-on:click="toggleSelect">
-                </div>
-                <div class="card-body">
-                  <input type="text" class="card-title d-block w-100" :value="note.title" @change="changeNoteTitle"/>
-                  <p class="card-text">{{note.text | summarize}}</p>
-                  <button @click="launchEditNote" class="btn btn-warning" v-if="showEditButton">edit</button>
-                </div>
-                <div class="card-footer bg-transparent py-1">
-                  <span class="d-block">{{note.labels.join(", ")}}</span>
-                </div>
-                <create-edit-note v-if="showNoteModal" :mode="mode" :note="note" @closeModal="closeModal"></create-edit-note>
-              </div>
-            </script>
     <script src="/dist/build.js"></script>
   </body>
 </html>
