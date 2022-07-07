@@ -91,16 +91,18 @@ new Vue({
             {...{
               scopedSlots: {
                 title: titleSlot => (
-                  <input
-                    class="form-group"
-                    type="input"
-                    value={titleSlot.title}
-                    name="title"
-                    id="title"
-                    onInput={event => {
-                      titleSlot.title = event.currentTarget.value;
-                    }}
-                  ></input>
+                  <div class="col-sm-12">
+                    <input
+                      class="form-control"
+                      type="input"
+                      value={titleSlot.title}
+                      name="title"
+                      id="title"
+                      onInput={event => {
+                        titleSlot.title = event.currentTarget.value;
+                      }}
+                    ></input>
+                  </div>
                 )
               }
             }}

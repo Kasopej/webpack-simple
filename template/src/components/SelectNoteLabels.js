@@ -37,6 +37,9 @@ export default {
     };
     return (
       <select ref="selectElem" multiple {...selectElemListeners}>
+        <option value={null} disabled>
+          Add labels
+        </option>
         {this.options.map((option, index) => (
           <option
             value={option}

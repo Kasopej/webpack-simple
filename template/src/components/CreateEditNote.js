@@ -1,4 +1,4 @@
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import SelectNoteLabels from "./SelectNoteLabels";
 
 export default {
@@ -24,17 +24,16 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      localNote: JSON.parse(JSON.stringify(this.note))
+    };
   },
   computed: {
-    localNote() {
-      return JSON.parse(JSON.stringify(this.note));
-    },
-    ...mapGetters(["nextId"]),
     ...mapState(["labels"])
   },
   methods: {
     ...mapActions(["addNote", "editNote"]),
+    ...mapMutations(["commitRemoveLabel"]),
     preventPropagation(event) {
       event.stopPropagation();
     },
@@ -50,6 +49,9 @@ export default {
       event.stopPropagation();
       this.$emit("closeModal");
     },
+    removeLabel(label) {
+      this.localNote.labels.splice(this.localNote.labels.indexOf(label), 1);
+    },
     onSubmit(event) {
       event.preventDefault();
     }
@@ -63,7 +65,7 @@ export default {
       >
         <div
           onClick={this.preventPropagation}
-          class="rounded text-center modal-dialog bg-white"
+          class="rounded modal-dialog bg-white note-modal"
         >
           <div class="modal-content">
             <div class="modal-header">
@@ -79,36 +81,63 @@ export default {
             <div class="modal-body">
               <form onSubmit={this.onSubmit}>
                 <div class="form-group">
-                  <label for="title">title</label>
+                  <label for="title" class="col-sm-2 col-form-label">
+                    title
+                  </label>
                   {this.$scopedSlots.title ? (
                     this.$scopedSlots.title(this.localNote)
                   ) : (
-                    <input
-                      value={this.localNote.title}
-                      name="title"
-                      id="title"
-                      onInput={event => {
-                        this.localNote.title = event.currentTarget.value;
-                      }}
-                    ></input>
+                    <div class="col-sm-12">
+                      <input
+                        value={this.localNote.title}
+                        name="title"
+                        class="form-control"
+                        id="title"
+                        onInput={event => {
+                          this.localNote.title = event.currentTarget.value;
+                        }}
+                      ></input>
+                    </div>
                   )}
                 </div>
                 <div class="form-group">
-                  <label for="note-text">text</label>
-                  <textarea
-                    value={this.localNote.text}
-                    onInput={event => {
-                      this.localNote.text = event.currentTarget.value;
-                    }}
-                  ></textarea>
+                  <label for="note-text" class="col-sm-2 col-form-label">
+                    text
+                  </label>
+                  <div class="col-sm-12">
+                    <textarea
+                      class="form-control"
+                      id="note-text"
+                      value={this.localNote.text}
+                      onInput={event => {
+                        this.localNote.text = event.currentTarget.value;
+                      }}
+                    ></textarea>
+                  </div>
                 </div>
                 <div class="form-group">
-                  <label for="note-text">labels</label>
-                  <span class="d-block">{this.localNote.labels.join()}</span>
-                  <SelectNoteLabels
-                    options={this.labels}
-                    onInput={event => (this.localNote.labels = event)}
-                  ></SelectNoteLabels>
+                  <label class="col-sm-2 col-form-label">labels</label>
+                  <div class="col-sm-12">
+                    <div class="form-control">
+                      {this.localNote.labels.map(label => (
+                        <span
+                          class="badge badge-warning mx-1 note-label"
+                          onClick={() => this.removeLabel(label)}
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-12">
+                    <SelectNoteLabels
+                      class="col-12"
+                      options={this.labels}
+                      onInput={event => (this.localNote.labels = event)}
+                    ></SelectNoteLabels>
+                  </div>
                 </div>
               </form>
             </div>

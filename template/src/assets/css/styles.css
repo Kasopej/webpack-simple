@@ -18,6 +18,9 @@
 .selected-label {
     background-color: green !important;
 }
+.note-modal .note-label:hover {
+    background-color: red;
+}
 .clear {
     width: 100%;
     clear: both;

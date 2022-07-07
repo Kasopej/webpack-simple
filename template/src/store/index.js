@@ -65,6 +65,9 @@ const mutations = {
       state.labels.splice(state.labels.length, 0, newLabel);
     }
   },
+  commitRemoveLabel(){
+    
+  },
   updateStateQuery(state, query) {
     state.notesQuery = query;
   },
