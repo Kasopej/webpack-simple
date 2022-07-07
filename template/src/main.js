@@ -82,7 +82,7 @@ new Vue({
       }
     };
     return (
-      <main class="container-fluid px-4">
+      <main class="container-fluid p-4">
         {this.showNoteModal ? (
           <create-edit-note
             onCloseModal={this.closeModal}
@@ -117,10 +117,10 @@ new Vue({
         />
         <section class="notes-section">
           <h3 class="text-center">Your notes</h3>
-          <div style="float:left" class="d-flex justify-content-start">
+          <div style="float:left">
             <button
               onClick={this.launchAddNote}
-              class="ml-2 btn btn-success rounded"
+              class="btn btn-success rounded"
             >
               +
             </button>
@@ -128,7 +128,6 @@ new Vue({
 
           <div style="float:right" class="d-flex justify-content-end">
             <div>
-              <i class="fa-thin fa-trash"></i>
               <button
                 class="delete btn btn-danger btn-md"
                 onClick={this.actOnMultipleNotes}
@@ -138,8 +137,8 @@ new Vue({
               </button>
             </div>
           </div>
-
-          <div class="d-flex flex-wrap notes-wrapper" style="clear:both">
+          <div style="width:100%;" class="clear"></div>
+          <div class="card-deck my-3">
             {this.notes.map(note => (
               <note-summary
                 note={note}
@@ -148,23 +147,32 @@ new Vue({
               ></note-summary>
             ))}
           </div>
-          <div class="d-flex"></div>
           <span>Labels: </span>
-          <button
-            class="btn p-1"
+          <ul class="d-inline-flex labels px-0 py-2 mr-2">
+            {this.labels.map(label => (
+              <li class="badge bg-warning p-2 mx-1" onClick={this.toggleLabel}>
+                {label}
+              </li>
+            ))}
+          </ul>
+          <span
+            class="py-2 px-2 bg-secondary mt-2 d-inline-block text-light add-label-trigger"
             onClick={() => (this.showCreateLabel = !this.showCreateLabel)}
           >
             +
-          </button>
+          </span>
+          <br></br>
           {this.showCreateLabel ? (
-            <div class="d-inline">
+            <div>
               <input
+                class="mr-2 p-1 border border-dark"
+                id="label-input"
                 type="text"
                 value={this.newLabel}
                 onInput={event => (this.newLabel = event.currentTarget.value)}
               ></input>
               <button
-                class="btn"
+                class="btn btn-warning p-1"
                 onClick={() => {
                   this.addLabel(this.newLabel);
                 }}
@@ -176,13 +184,6 @@ new Vue({
           ) : (
             ""
           )}
-          <ul class="d-flex mt-2">
-            {this.labels.map(label => (
-              <li class="badge bg-warning px-2" onClick={this.toggleLabel}>
-                {label}
-              </li>
-            ))}
-          </ul>
         </section>
       </main>
     );

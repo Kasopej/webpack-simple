@@ -1,6 +1,14 @@
 .notes-wrapper {
     align-items: flex-start;
 }
+.card-dexk {
+    align-items: center;
+}
+
+.note-summary {
+    box-shadow: 4px 5px rgba(6, 11, 16, 0.2);
+    max-width: max-content;
+}
 #delete-note-check:hover {
     border: solid 1px green
 }
@@ -9,4 +17,32 @@
 }
 .selected-label {
     background-color: green !important;
+}
+.clear {
+    width: 100%;
+    clear: both;
+}
+
+.labels {
+    list-style: none;
+}
+
+.labels li {
+    font-size: 0.85rem;
+}
+
+.add-label-trigger {
+    line-height: 1;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+input {
+    border-width: 1px;
+    border-radius: 0.25rem;
+}
+
+#label-input+button {
+    position: relative;
+    top: -1px;
 }

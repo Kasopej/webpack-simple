@@ -54,6 +54,9 @@ const mutations = {
   commitEditNote(state, note) {
     state.notes.splice(getNotePosition(state, note), 1, note);
   },
+  commitEditTitle(state, payload) {
+    state.notes[getNotePosition(state, payload.note)].title = payload.title;
+  },
   deleteNote(state, note) {
     state.notes.splice(getNotePosition(state, note), 1);
   },
@@ -65,7 +68,7 @@ const mutations = {
   updateStateQuery(state, query) {
     state.notesQuery = query;
   },
-  commitSelectedLabels(state, selectedLabels){
+  commitSelectedLabels(state, selectedLabels) {
     state.selectedLabels = selectedLabels;
   }
 };

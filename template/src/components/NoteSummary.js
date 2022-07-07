@@ -1,4 +1,5 @@
 import CreateEditNote from "./CreateEditNote";
+import { mapMutations } from "vuex";
 
 const summaryLength = 20;
 export default {
@@ -18,10 +19,15 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["commitEditTitle"]),
     toggleSelect(e) {
       e.target.checked
         ? this.$emit("selectNote", this.note)
         : this.$emit("unSelectNote", this.note);
+    },
+    changeNoteTitle(evt) {
+      console.log("changing title");
+      this.commitEditTitle({ note: this.note, title: evt.currentTarget.value });
     },
     launchEditNote() {
       this.showNoteModal = true;
